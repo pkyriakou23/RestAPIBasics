@@ -58,3 +58,7 @@ For more complex use cases or future scalability, it’s better to consider brea
 - Borders: Store the borders (country codes).
 
 These among other details that may be needed, can be connected through foreign keys to maintain a clear relationship between the data.
+
+#### Known Limitations
+- Not production-ready: The application is designed for development and testing purposes and lacks certain authorizations and security features needed for production use.
+- Configuration: The current configuration assumes a development environment with local database access.
