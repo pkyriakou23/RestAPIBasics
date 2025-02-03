@@ -1,0 +1,112 @@
+openapi: 3.0.1
+info:
+  title: RestAPIBasics API
+  description: |
+    - The **Countries API** fetches country details such as name, capital, and borders.
+    - The **Numbers API** processes an array of numbers.
+  version: '1.0'
+servers:
+  - url: localhost/port
+
+paths:
+  /api/v1/Countries:
+    get:
+      summary: Get a list of countries
+      description: |
+        Retrieves all available countries along with their common name, capital, and borders.
+        The data is sourced from a third-party API or the database and may be cached for performance optimization.
+      tags:
+        - Countries
+      responses:
+        '200':
+          description: A list of countries retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CountryResponse'
+              example:
+                - name: "France"
+                  capital: ["Paris"]
+                  borders: ["BEL", "DEU", "ITA", "ESP", "CHE"]
+                - name: "Japan"
+                  capital: ["Tokyo"]
+                  borders: []
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                error: "Internal Server Error"
+
+  /api/v1/Numbers:
+    post:
+      summary: Returns the second largest of an array of numbers
+      description: |
+        Accepts an array of integers in order to find the second largest number.
+      tags:
+        - Numbers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestObj'
+            example:
+              requestArrayObj: [5, 3, 8, 1, 9]
+          text/json:
+            schema:
+              $ref: '#/components/schemas/RequestObj'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/RequestObj'
+      responses:
+        '200':
+          description: The numbers have been processed successfully. At least two distinct numbers must be provided.
+          content:
+            application/json:
+              example:
+                secondLargest: 8
+        '400':
+          description: Bad Request - Invalid input
+          content:
+            application/json:
+              example:
+                error: "Array must contain at least two numbers."
+
+components:
+  schemas:
+    CountryResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Germany"
+          description: The common name of the country.
+        capital:
+          type: array
+          items:
+            type: string
+          example: ["Berlin"]
+          description: The capital(s) of the country.
+        borders:
+          type: array
+          items:
+            type: string
+          example: ["FRA", "POL", "AUT"]
+          description: The country codes of bordering nations.
+
+    RequestObj:
+      type: object
+      required:
+        - requestArrayObj
+      properties:
+        requestArrayObj:
+          type: array
+          items:
+            type: integer
+            format: int32
+          example: [4, 2, 9, 7]
+          description: An array of integers.
+      additionalProperties: false
